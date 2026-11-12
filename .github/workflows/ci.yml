@@ -1,0 +1,30 @@
+name: AI Assisted CI Pipeline
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Code Formatting
+        run: black --check src tests
+
+      - name: Automated Testing
+        run: pytest --cov=src --cov-fail-under=80
+
+      - name: Security Scanning
+        run: bandit -r src
